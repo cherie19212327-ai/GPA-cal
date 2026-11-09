@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GPA Calculator</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #09090a 0%, #8f0505 100%);
+      padding: 20px;
+      color: #021306;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      padding: 32px 20px 24px;
+      color: #fff;
+    }
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    header p {
+      margin-top: 6px;
+      font-size: 1rem;
+      opacity: 0.85;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+      max-width: 860px;
+      margin: 0 auto 28px;
+      padding: 28px 28px 24px;
+      animation: fadeInUp 0.35s ease both;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #764ba2;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card h2::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 4px;
+    }
+
+    /* ── Cumulative Section ── */
+    .cumulative-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 480px) {
+      .cumulative-grid { grid-template-columns: 1fr; }
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .field-group label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .field-group input,
+    .field-group select {
+      padding: 9px 12px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fafafa;
+      color: #333;
+    }
+    .field-group input:focus,
+    .field-group select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.18);
+      background: #fff;
+    }
+    .field-group input.error,
+    .field-group select.error {
+      border-color: #e53e3e;
+      box-shadow: 0 0 0 3px rgba(229,62,62,0.15);
+    }
+    .field-error {
+      font-size: 0.78rem;
+      color: #e53e3e;
+      min-height: 16px;
+    }
+
+    /* ── Course Table ── */
+    .courses-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.2fr 40px;
+      gap: 10px;
+      padding: 0 4px 8px;
+      border-bottom: 2px solid #f0f0f0;
+      margin-bottom: 6px;
+    }
+    .courses-header span {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .course-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.2fr 40px;
+      gap: 10px;
+      align-items: start;
+      padding: 8px 4px;
+      border-radius: 8px;
+      transition: background 0.15s;
+      animation: rowFadeIn 0.25s ease both;
+    }
+    @keyframes rowFadeIn {
+      from { opacity: 0; transform: translateX(-10px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .course-row:hover { background: #fafbff; }
+
+    .course-row input,
+    .course-row select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fafafa;
+      color: #333;
+    }
+    .course-row input:focus,
+    .course-row select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.18);
+      background: #fff;
+    }
+    .course-row input.error,
+    .course-row select.error {
+      border-color: #e53e3e;
+      box-shadow: 0 0 0 3px rgba(229,62,62,0.15);
+    }
+
+    /* visually-hidden helper for screen-reader labels */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
+
+    /* ── Remove Button ── */
+    .btn-remove {
+      width: 36px; height: 36px;
+      border: none;
+      border-radius: 8px;
+      background: #fff0f0;
+      color: #e53e3e;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, transform 0.15s;
+      margin-top: 2px;
+    }
+    .btn-remove:hover { background: #ffd5d5; transform: scale(1.1); }
+    .btn-remove:focus-visible {
+      outline: 2px solid #e53e3e;
+      outline-offset: 2px;
+    }
+
+    /* ── Row Error ── */
+    .row-error {
+      font-size: 0.78rem;
+      color: #e53e3e;
+      grid-column: 1 / -1;
+      padding: 0 4px;
+      min-height: 14px;
+    }
+
+    /* ── Global Error Banner ── */
+    #global-error {
+      background: #fff5f5;
+      border: 1.5px solid #feb2b2;
+      border-radius: 8px;
+      color: #c53030;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      display: none;
+    }
+    #global-error.visible { display: block; }
+
+    /* ── Add Course Button ── */
+    .btn-add {
+      margin-top: 14px;
+      padding: 9px 20px;
+      border: 2px dashed #667eea;
+      background: transparent;
+      color: #667eea;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-add:hover { background: rgba(102,126,234,0.08); }
+    .btn-add:focus-visible { outline: 2px solid #667eea; outline-offset: 2px; }
+
+    /* ── Action Buttons ── */
+    .action-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .btn-calculate {
+      flex: 1;
+      min-width: 160px;
+      padding: 13px 24px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+    }
+    .btn-calculate:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(102,126,234,0.5);
+    }
+    .btn-calculate:active { transform: translateY(0); }
+    .btn-calculate:focus-visible { outline: 2px solid #764ba2; outline-offset: 3px; }
+
+    .btn-reset {
+      padding: 13px 24px;
+      background: #f7f7f7;
+      color: #666;
+      border: 1.5px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-reset:hover { background: #ececec; color: #333; }
+    .btn-reset:focus-visible { outline: 2px solid #999; outline-offset: 3px; }
+
+    /* ── Result Card ── */
+    #result-section {
+      display: none;
+      animation: fadeInUp 0.4s ease both;
+    }
+    #result-section.visible { display: block; }
+
+    .result-inner {
+      text-align: center;
+      padding: 10px 0 6px;
+    }
+    .result-label {
+      font-size: 0.9rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .result-gpa {
+      font-size: clamp(3rem, 10vw, 5rem);
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 8px;
+      transition: color 0.4s;
+    }
+    .result-descriptor {
+      display: inline-block;
+      padding: 5px 18px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      margin-bottom: 20px;
+    }
+
+    /* color themes */
+    .gpa-excellent .result-gpa { color: #276749; }
+    .gpa-excellent .result-descriptor { background: #c6f6d5; color: #22543d; }
+
+    .gpa-good .result-gpa { color: #2c7a7b; }
+    .gpa-good .result-descriptor { background: #b2f5ea; color: #234e52; }
+
+    .gpa-average .result-gpa { color: #b7791f; }
+    .gpa-average .result-descriptor { background: #fefcbf; color: #744210; }
+
+    .gpa-below .result-gpa { color: #c05621; }
+    .gpa-below .result-descriptor { background: #fbd38d; color: #7b341e; }
+
+    .gpa-poor .result-gpa { color: #c53030; }
+    .gpa-poor .result-descriptor { background: #fed7d7; color: #822727; }
+
+    /* breakdown table */
+    .breakdown {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+      font-size: 0.9rem;
+    }
+    .breakdown th {
+      background: #f7f8ff;
+      color: #667eea;
+      font-weight: 700;
+      padding: 9px 12px;
+      text-align: left;
+      border-bottom: 2px solid #e8eaff;
+    }
+    .breakdown td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #444;
+    }
+    .breakdown tr:last-child td { border-bottom: none; }
+    .breakdown tr:hover td { background: #fafbff; }
+
+    .cumulative-row td {
+      font-weight: 700;
+      color: #764ba2;
+      background: #faf5ff;
+      border-top: 2px solid #e9d8fd;
+    }
+
+    /* ── Responsive tweaks ── */
+    @media (max-width: 600px) {
+      .card { padding: 18px 14px; }
+
+      .courses-header,
+      .course-row {
+        grid-template-columns: 1.4fr 0.8fr 1fr 36px;
+        gap: 6px;
+      }
+      .action-row { flex-direction: column; }
+      .btn-calculate, .btn-reset { width: 100%; }
+
+      .breakdown th, .breakdown td { padding: 7px 8px; font-size: 0.82rem; }
+    }
+
+    @media (max-width: 380px) {
+      .courses-header { display: none; }
+      .course-row { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
+      .course-row .col-name { grid-column: 1 / -1; }
+      .course-row .col-remove { grid-row: 2; grid-column: 2; justify-self: end; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header>
+    <h1>🎓 GPA Calculator</h1>
+    <p>Calculate your semester &amp; cumulative GPA instantly</p>
+  </header>
+
+  <!-- ── Cumulative GPA Section ── -->
+  <div class="card" id="cumulative-card">
+    <h2>Previous Cumulative GPA <span style="font-weight:400;color:#aaa;font-size:0.85rem;">(optional)</span></h2>
+    <div class="cumulative-grid">
+      <div class="field-group">
+        <label for="prev-gpa">Previous Cumulative GPA</label>
+        <input
+          type="number"
+          id="prev-gpa"
+          name="prev-gpa"
+          placeholder="e.g. 3.50"
+          min="0" max="4" step="0.01"
+          aria-describedby="prev-gpa-error"
+        />
+        <span class="field-error" id="prev-gpa-error" role="alert"></span>
+      </div>
+      <div class="field-group">
+        <label for="prev-credits">Previous Total Credit Hours</label>
+        <input
+          type="number"
+          id="prev-credits"
+          name="prev-credits"
+          placeholder="e.g. 60"
+          min="0" step="0.5"
+          aria-describedby="prev-credits-error"
+        />
+        <span class="field-error" id="prev-credits-error" role="alert"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Courses Section ── -->
+  <div class="card">
+    <h2>Courses This Semester</h2>
+
+    <div id="global-error" role="alert" aria-live="assertive"></div>
+
+    <!-- Column headers (hidden on very small screens) -->
+    <div class="courses-header" aria-hidden="true">
+      <span>Course Name</span>
+      <span>Credits</span>
+      <span>Grade</span>
+      <span></span>
+    </div>
+
+    <!-- Course rows container -->
+    <div id="courses-container"></div>
+
+    <button class="btn-add" id="btn-add" type="button" aria-label="Add another course">
+      ＋ Add Course
+    </button>
+
+    <div class="action-row" style="margin-top:24px;">
+      <button class="btn-calculate" id="btn-calculate" type="button">Calculate GPA</button>
+      <button class="btn-reset" id="btn-reset" type="button">Reset</button>
+    </div>
+  </div>
+
+  <!-- ── Result Section ── -->
+  <div class="card" id="result-section" aria-live="polite">
+    <h2>Your Results</h2>
+    <div class="result-inner" id="result-inner">
+      <!-- filled by JS -->
+    </div>
+    <table class="breakdown" id="breakdown-table" aria-label="GPA breakdown by course">
+      <thead>
+        <tr>
+          <th scope="col">Course</th>
+          <th scope="col">Credits</th>
+          <th scope="col">Grade</th>
+          <th scope="col">Points</th>
+          <th scope="col">Quality Pts</th>
+        </tr>
+      </thead>
+      <tbody id="breakdown-body"></tbody>
+    </table>
+  </div>
+
+  <script>
+    /* ── Grade Scale ── */
+    const GRADE_POINTS = {
+      'A+': 4.0, 'A': 4.0, 'A-': 3.7,
+      'B+': 3.3, 'B': 3.0, 'B-': 2.7,
+      'C+': 2.3, 'C': 2.0, 'C-': 1.7,
+      'D+': 1.3, 'D': 1.0, 'D-': 0.7,
+      'F':  0.0
+    };
+
+    const GRADES = Object.keys(GRADE_POINTS);
+
+    /* ── State ── */
+    let rowIdCounter = 0;
+
+    /* ── DOM refs ── */
+    const container   = document.getElementById('courses-container');
+    const btnAdd      = document.getElementById('btn-add');
+    const btnCalc     = document.getElementById('btn-calculate');
+    const btnReset    = document.getElementById('btn-reset');
+    const globalError = document.getElementById('global-error');
+    const resultSec   = document.getElementById('result-section');
+    const resultInner = document.getElementById('result-inner');
+    const brkBody     = document.getElementById('breakdown-body');
+    const prevGpaEl   = document.getElementById('prev-gpa');
+    const prevCredEl  = document.getElementById('prev-credits');
+    const prevGpaErr  = document.getElementById('prev-gpa-error');
+    const prevCredErr = document.getElementById('prev-credits-error');
+
+    /* ── Build grade <options> string ── */
+    const gradeOptions = GRADES.map(g =>
+      `<option value="${g}">${g}</option>`
+    ).join('');
+
+    /* ── Add a course row ── */
+    function addRow(name = '', credits = '', grade = 'A') {
+      const id = ++rowIdCounter;
+
+      const row = document.createElement('div');
+      row.className = 'course-row';
+      row.dataset.rowId = id;
+      row.innerHTML = `
+        <div class="field-group col-name">
+          <label class="sr-only" for="name-${id}">Course name for row ${id}</label>
+          <input
+            type="text"
+            id="name-${id}"
+            class="course-name"
+            placeholder="e.g. Calculus I"
+            value="${escHtml(name)}"
+            aria-label="Course name"
+          />
+        </div>
+        <div class="field-group">
+          <label class="sr-only" for="credits-${id}">Credit hours for row ${id}</label>
+          <input
+            type="number"
+            id="credits-${id}"
+            class="course-credits"
+            placeholder="3"
+            min="0.5" step="0.5"
+            value="${escHtml(String(credits))}"
+            aria-label="Credit hours"
+          />
+        </div>
+        <div class="field-group">
+          <label class="sr-only" for="grade-${id}">Grade for row ${id}</label>
+          <select id="grade-${id}" class="course-grade" aria-label="Grade">
+            ${GRADES.map(g =>
+              `<option value="${g}"${g === grade ? ' selected' : ''}>${g}</option>`
+            ).join('')}
+          </select>
+        </div>
+        <button
+          class="btn-remove col-remove"
+          type="button"
+          aria-label="Remove course row ${id}"
+          data-target="${id}"
+        >×</button>
+      `;
+
+      container.appendChild(row);
+
+      /* clear result on any change */
+      row.querySelectorAll('input, select').forEach(el =>
+        el.addEventListener('input', clearResult)
+      );
+
+      return row;
+    }
+
+    /* ── Remove a row ── */
+    function removeRow(id) {
+      const row = container.querySelector(`[data-row-id="${id}"]`);
+      if (!row) return;
+      /* keep at least one row */
+      if (container.children.length <= 1) {
+        /* just clear the row instead */
+        row.querySelector('.course-name').value    = '';
+        row.querySelector('.course-credits').value = '';
+        row.querySelector('.course-grade').value   = 'A';
+        clearErrors(row);
+        return;
+      }
+      row.remove();
+      clearResult();
+    }
+
+    /* ── Escape HTML ── */
+    function escHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    /* ── Clear inline errors on a row ── */
+    function clearErrors(row) {
+      row.querySelectorAll('input, select').forEach(el => el.classList.remove('error'));
+      const errEl = row.querySelector('.row-error');
+      if (errEl) errEl.remove();
+    }
+
+    /* ── Show global error ── */
+    function showGlobal(msg) {
+      globalError.textContent = msg;
+      globalError.classList.add('visible');
+    }
+    function hideGlobal() {
+      globalError.textContent = '';
+      globalError.classList.remove('visible');
+    }
+
+    /* ── Clear result display ── */
+    function clearResult() {
+      resultSec.classList.remove('visible');
+      hideGlobal();
+    }
+
+    /* ── Validate cumulative inputs; returns { valid, prevGpa, prevCredits } ── */
+    function validateCumulative() {
+      let valid = true;
+
+      const gpaRaw   = prevGpaEl.value.trim();
+      const credRaw  = prevCredEl.value.trim();
+
+      prevGpaEl.classList.remove('error');
+      prevCredEl.classList.remove('error');
+      prevGpaErr.textContent  = '';
+      prevCredErr.textContent = '';
+
+      let prevGpa     = null;
+      let prevCredits = null;
+
+      const hasPrevGpa  = gpaRaw  !== '';
+      const hasPrevCred = credRaw !== '';
+
+      if (hasPrevGpa || hasPrevCred) {
+        /* if one is filled, both must be */
+        if (!hasPrevGpa) {
+          prevGpaEl.classList.add('error');
+          prevGpaErr.textContent = 'Enter previous GPA to pair with credit hours.';
+          valid = false;
+        } else {
+          const v = parseFloat(gpaRaw);
+          if (isNaN(v) || v < 0 || v > 4) {
+            prevGpaEl.classList.add('error');
+            prevGpaErr.textContent = 'Must be a number between 0.00 and 4.00.';
+            valid = false;
+          } else {
+            prevGpa = v;
+          }
+        }
+
+        if (!hasPrevCred) {
+          prevCredEl.classList.add('error');
+          prevCredErr.textContent = 'Enter previous credit hours to pair with GPA.';
+          valid = false;
+        } else {
+          const v = parseFloat(credRaw);
+          if (isNaN(v) || v < 0) {
+            prevCredEl.classList.add('error');
+            prevCredErr.textContent = 'Must be a non-negative number.';
+            valid = false;
+          } else {
+            prevCredits = v;
+          }
+        }
+      }
+
+      return { valid, prevGpa, prevCredits };
+    }
+
+    /* ── Validate & parse course rows ── */
+    function validateCourses() {
+      let allValid = true;
+      const courses = [];
+
+      Array.from(container.children).forEach(row => {
+        clearErrors(row);
+
+        const nameEl    = row.querySelector('.course-name');
+        const creditsEl = row.querySelector('.course-credits');
+        const gradeEl   = row.querySelector('.course-grade');
+
+        const name    = nameEl.value.trim() || `Course ${row.dataset.rowId}`;
+        const credStr = creditsEl.value.trim();
+        const grade   = gradeEl.value;
+
+        let rowValid = true;
+
+        const credits = parseFloat(credStr);
+        if (credStr === '' || isNaN(credits) || credits <= 0) {
+          creditsEl.classList.add('error');
+
+          /* append inline error message */
+          let errEl = row.querySelector('.row-error');
+          if (!errEl) {
+            errEl = document.createElement('span');
+            errEl.className = 'row-error';
+            errEl.setAttribute('role', 'alert');
+            row.appendChild(errEl);
+          }
+          errEl.textContent = 'Credit hours must be a positive number.';
+          rowValid  = false;
+          allValid  = false;
+        }
+
+        if (rowValid) {
+          courses.push({ name, credits, grade, points: GRADE_POINTS[grade] });
+        }
+      });
+
+      return { allValid, courses };
+    }
+
+    /* ── GPA descriptor ── */
+    function descriptor(gpa) {
+      if (gpa >= 3.7) return { label: 'Excellent', cls: 'gpa-excellent' };
+      if (gpa >= 3.0) return { label: 'Good',      cls: 'gpa-good' };
+      if (gpa >= 2.0) return { label: 'Average',   cls: 'gpa-average' };
+      if (gpa >= 1.0) return { label: 'Below Average', cls: 'gpa-below' };
+      return            { label: 'Poor',            cls: 'gpa-poor' };
+    }
+
+    /* ── Render result ── */
+    function renderResult(semGpa, cumGpa, courses, prevGpa, prevCredits) {
+      const desc = descriptor(semGpa);
+
+      /* remove old theme classes */
+      resultInner.className = 'result-inner';
+      resultInner.classList.add(desc.cls);
+
+      let html = `
+        <p class="result-label">Semester GPA</p>
+        <p class="result-gpa">${semGpa.toFixed(2)}</p>
+        <span class="result-descriptor">${desc.label}</span>
+      `;
+
+      if (cumGpa !== null) {
+        const cDesc = descriptor(cumGpa);
+        html += `
+          <p class="result-label" style="margin-top:16px;">Cumulative GPA</p>
+          <p class="result-gpa" style="font-size:clamp(2rem,7vw,3.5rem);color:inherit;">${cumGpa.toFixed(2)}</p>
+          <span class="result-descriptor" style="background:${cDesc.cls === 'gpa-excellent' ? '#c6f6d5' : cDesc.cls === 'gpa-good' ? '#b2f5ea' : cDesc.cls === 'gpa-average' ? '#fefcbf' : cDesc.cls === 'gpa-below' ? '#fbd38d' : '#fed7d7'};color:inherit;">${cDesc.label}</span>
+        `;
+      }
+
+      resultInner.innerHTML = html;
+
+      /* breakdown table */
+      let rows = '';
+      let totalCredits = 0, totalQP = 0;
+      courses.forEach(c => {
+        const qp = (c.points * c.credits).toFixed(2);
+        totalCredits += c.credits;
+        totalQP      += c.points * c.credits;
+        rows += `<tr>
+          <td>${escHtml(c.name)}</td>
+          <td>${c.credits}</td>
+          <td>${c.grade}</td>
+          <td>${c.points.toFixed(1)}</td>
+          <td>${qp}</td>
+        </tr>`;
+      });
+      rows += `<tr style="font-weight:700;background:#f7f8ff;">
+        <td>Semester Total</td>
+        <td>${totalCredits}</td>
+        <td>—</td>
+        <td>—</td>
+        <td>${totalQP.toFixed(2)}</td>
+      </tr>`;
+
+      if (cumGpa !== null) {
+        const totalAllCred = totalCredits + prevCredits;
+        const totalAllQP   = totalQP + prevGpa * prevCredits;
+        rows += `<tr class="cumulative-row">
+          <td>Cumulative Total</td>
+          <td>${totalAllCred}</td>
+          <td>—</td>
+          <td>—</td>
+          <td>${totalAllQP.toFixed(2)}</td>
+        </tr>`;
+      }
+
+      brkBody.innerHTML = rows;
+      resultSec.classList.add('visible');
+      resultSec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    /* ── Calculate ── */
+    function calculate() {
+      hideGlobal();
+
+      const cumVal  = validateCumulative();
+      const courseVal = validateCourses();
+
+      if (!cumVal.valid) return;
+
+      if (!courseVal.allValid) {
+        showGlobal('Please fix the highlighted errors before calculating.');
+        return;
+      }
+
+      if (courseVal.courses.length === 0) {
+        showGlobal('Please add at least one course with valid credit hours.');
+        return;
+      }
+
+      const { courses } = courseVal;
+      const { prevGpa, prevCredits } = cumVal;
+
+      /* Semester GPA */
+      let totalQP      = 0;
+      let totalCredits = 0;
+      courses.forEach(c => {
+        totalQP      += c.points * c.credits;
+        totalCredits += c.credits;
+      });
+      const semGpa = totalQP / totalCredits;
+
+      /* Cumulative GPA */
+      let cumGpa = null;
+      if (prevGpa !== null && prevCredits !== null) {
+        cumGpa = (totalQP + prevGpa * prevCredits) / (totalCredits + prevCredits);
+      }
+
+      renderResult(semGpa, cumGpa, courses, prevGpa, prevCredits);
+    }
+
+    /* ── Reset ── */
+    function reset() {
+      container.innerHTML = '';
+      rowIdCounter = 0;
+      addRow();
+      prevGpaEl.value  = '';
+      prevCredEl.value = '';
+      prevGpaEl.classList.remove('error');
+      prevCredEl.classList.remove('error');
+      prevGpaErr.textContent  = '';
+      prevCredErr.textContent = '';
+      clearResult();
+    }
+
+    /* ── Event delegation for remove buttons ── */
+    container.addEventListener('click', e => {
+      const btn = e.target.closest('.btn-remove');
+      if (btn) removeRow(parseInt(btn.dataset.target, 10));
+    });
+
+    /* ── Enter key triggers calculate ── */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') calculate();
+    });
+
+    btnAdd.addEventListener('click', () => addRow());
+    btnCalc.addEventListener('click', calculate);
+    btnReset.addEventListener('click', reset);
+
+    /* ── Initialise with one empty row ── */
+    addRow();
+  </script>
+</body>
+</html>
