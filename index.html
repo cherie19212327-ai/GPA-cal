@@ -3,8 +3,80 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GPA Calculator</title>
+  <title>GPA Calculator — GradeIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
+
+    /* ── Top Navbar ── */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15,14,23,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(108,99,255,0.2);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+    .top-nav .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #fff;
+      text-decoration: none;
+    }
+    .top-nav .nav-logo i {
+      color: #6C63FF;
+      font-size: 1.2rem;
+    }
+    .top-nav .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .top-nav .nav-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .top-nav .nav-link:hover {
+      color: #fff;
+      background: rgba(108,99,255,0.15);
+    }
+    .top-nav .nav-link.active {
+      color: #6C63FF;
+      font-weight: 600;
+    }
+    .top-nav .nav-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, #6C63FF, #3ECFCF);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .top-nav .nav-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    @media (max-width: 480px) {
+      .top-nav .nav-link { display: none; }
+    }
     /* ── Reset & Base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -391,6 +463,22 @@
   </style>
 </head>
 <body>
+
+  <!-- ── Top Navigation ── -->
+  <nav class="top-nav" aria-label="Main navigation">
+    <a href="home.html" class="nav-logo" aria-label="GradeIQ Home">
+      <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+      GradeIQ
+    </a>
+    <div class="nav-actions">
+      <a href="home.html" class="nav-link">Home</a>
+      <a href="calculator.html" class="nav-link">Calculator</a>
+      <a href="index.html" class="nav-link active" aria-current="page">Classic</a>
+      <a href="calculator.html" class="nav-btn">
+        <i class="fa-solid fa-star" aria-hidden="true"></i> Try New Version
+      </a>
+    </div>
+  </nav>
 
   <!-- ── Header ── -->
   <header>
@@ -859,8 +947,5 @@
     /* ── Initialise with one empty row ── */
     addRow();
   </script>
-  <a href="home.html" style="background-color: #a9a9c4; font-style: italic; font-size: large;"> go to home
-
-</a>
 </body>
 </html>
