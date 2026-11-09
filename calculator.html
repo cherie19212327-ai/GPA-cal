@@ -13,22 +13,27 @@
        CSS CUSTOM PROPERTIES
     ════════════════════════════════════════ */
     :root {
-      --primary:       #6C63FF;
-      --secondary:     #3ECFCF;
-      --accent:        #FF6584;
-      --bg:            #F7F6FF;
-      --bg-card:       rgba(255,255,255,0.7);
-      --border-glass:  rgba(108,99,255,0.15);
-      --text-primary:  #1a1040;
-      --text-muted:    #6b6b8d;
-      --text-dimmed:   #9999bb;
-      --font:          'Inter', sans-serif;
-      --transition:    0.3s ease;
-      --radius-lg:     16px;
-      --radius-md:     12px;
-      --radius-sm:     8px;
-      --shadow-card:   0 8px 32px rgba(108,99,255,0.10);
-      --shadow-hover:  0 16px 48px rgba(108,99,255,0.18);
+      --primary:        #6C63FF;
+      --secondary:      #3ECFCF;
+      --accent:         #FF6584;
+      --calc-bg:        #1a1040;
+      --calc-screen:    #0d0820;
+      --calc-btn:       #2d2060;
+      --calc-btn-op:    #6C63FF;
+      --calc-btn-grade: #3ECFCF;
+      --bg:             #F7F6FF;
+      --bg-card:        rgba(255,255,255,0.7);
+      --border-glass:   rgba(108,99,255,0.15);
+      --text-primary:   #1a1040;
+      --text-muted:     #6b6b8d;
+      --text-dimmed:    #9999bb;
+      --font:           'Inter', sans-serif;
+      --transition:     0.3s ease;
+      --radius-lg:      16px;
+      --radius-md:      12px;
+      --radius-sm:      8px;
+      --shadow-card:    0 8px 32px rgba(108,99,255,0.10);
+      --shadow-hover:   0 16px 48px rgba(108,99,255,0.18);
     }
 
     /* ════════════════════════════════════════
@@ -61,8 +66,10 @@
       from { opacity: 0; transform: translateY(-10px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    @keyframes progressFill {
-      from { width: 0; }
+    @keyframes screenFlash {
+      0%   { background: #0d0820; }
+      40%  { background: var(--flash-color, #0d0820); }
+      100% { background: #0d0820; }
     }
 
     /* ════════════════════════════════════════
@@ -151,10 +158,7 @@
     }
     .nav-links a:hover { color: var(--text-primary); }
     .nav-links a:hover::after { transform: scaleX(1); }
-    .nav-links a.active {
-      color: var(--primary);
-      font-weight: 700;
-    }
+    .nav-links a.active { color: var(--primary); font-weight: 700; }
     .nav-links a.active::after { transform: scaleX(1); }
 
     .btn-nav-home {
@@ -177,7 +181,6 @@
       transform: translateY(-1px);
     }
 
-    /* Hamburger */
     .hamburger {
       display: none;
       flex-direction: column;
@@ -187,7 +190,6 @@
       background: none;
       border: none;
       padding: 4px;
-      cursor: pointer;
     }
     .hamburger span {
       display: block;
@@ -200,7 +202,6 @@
     .hamburger.open span:nth-child(2) { opacity: 0; }
     .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    /* Mobile menu */
     #mobile-menu {
       display: none;
       position: fixed;
@@ -222,7 +223,8 @@
       color: var(--text-muted);
       transition: color var(--transition);
     }
-    #mobile-menu a:hover, #mobile-menu a.active { color: var(--primary); }
+    #mobile-menu a:hover,
+    #mobile-menu a.active { color: var(--primary); }
 
     /* ════════════════════════════════════════
        PAGE HERO BANNER
@@ -296,19 +298,253 @@
       box-shadow: var(--shadow-card);
       transition: box-shadow var(--transition);
     }
-    .card:hover {
-      box-shadow: var(--shadow-hover);
+    .card:hover { box-shadow: var(--shadow-hover); }
+    .card-body { padding: 28px; }
+
+    /* ════════════════════════════════════════
+       PHYSICAL CALCULATOR WIDGET
+    ════════════════════════════════════════ */
+    .widget-calc {
+      background: #1a1040;
+      border: 1px solid rgba(108,99,255,0.3);
+      border-radius: 24px;
+      padding: 24px 20px;
+      box-shadow: 0 16px 60px rgba(26,16,64,0.5), 0 0 0 1px rgba(108,99,255,0.15);
+      margin-bottom: 24px;
     }
-    .card-body {
-      padding: 28px;
+    .widget-calc:hover { box-shadow: 0 20px 70px rgba(26,16,64,0.6), 0 0 0 1px rgba(108,99,255,0.25); }
+
+    .widget-brand {
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(108,99,255,0.6);
+      margin-bottom: 16px;
     }
+    .widget-brand span { color: rgba(62,207,207,0.8); }
+
+    .calc-screen-wrap {
+      background: #0d0820;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(108,99,255,0.2);
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-end;
+      transition: background 0.3s ease;
+    }
+    .calc-screen-wrap.flash-green {
+      animation: screenFlash 0.5s ease;
+      --flash-color: rgba(34,197,94,0.3);
+    }
+    .calc-screen-wrap.flash-red {
+      animation: screenFlash 0.5s ease;
+      --flash-color: rgba(239,68,68,0.3);
+    }
+
+    .calc-screen-sub {
+      font-size: 0.78rem;
+      color: rgba(108,99,255,0.5);
+      font-family: 'Inter', monospace;
+      min-height: 18px;
+      word-break: break-all;
+      text-align: right;
+    }
+    .calc-screen-main {
+      font-size: 2.4rem;
+      font-weight: 800;
+      font-family: 'Inter', monospace;
+      color: #fff;
+      letter-spacing: -1px;
+      line-height: 1;
+      word-break: break-all;
+      text-align: right;
+      background: linear-gradient(135deg, #fff, #a8a4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .calc-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .cb-zero { grid-column: span 2; }
+
+    .cb {
+      height: 54px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.15s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .cb::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,0);
+      transition: background 0.15s ease;
+    }
+    .cb:hover::after { background: rgba(255,255,255,0.08); }
+    .cb:active { transform: scale(0.93); }
+
+    .cb-num {
+      background: #2d2060;
+      color: #e8e4ff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .cb-num:hover {
+      background: #362875;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.35), 0 0 12px rgba(108,99,255,0.2);
+    }
+    .cb-util {
+      background: #3d2d70;
+      color: #c4beff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+      font-size: 0.95rem;
+    }
+    .cb-util:hover { background: #4a3880; }
+    .cb-op {
+      background: linear-gradient(145deg, #6C63FF, #5a52e0);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(108,99,255,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+      font-size: 1.2rem;
+    }
+    .cb-op:hover { box-shadow: 0 6px 20px rgba(108,99,255,0.55); }
+    .cb-equals {
+      background: linear-gradient(145deg, #3ECFCF, #2bb8b8);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(62,207,207,0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+    .cb-equals:hover { box-shadow: 0 6px 22px rgba(62,207,207,0.6); }
+
+    /* Grade selector */
+    .grade-selector-section { margin-bottom: 14px; }
+    .grade-selector-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(62,207,207,0.8);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .grade-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+    }
+    .cb-grade {
+      height: 38px;
+      border: 1.5px solid rgba(62,207,207,0.25);
+      border-radius: 9px;
+      background: rgba(62,207,207,0.06);
+      color: rgba(62,207,207,0.85);
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .cb-grade:hover {
+      background: rgba(62,207,207,0.15);
+      border-color: rgba(62,207,207,0.55);
+      color: #3ECFCF;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(62,207,207,0.2);
+    }
+    .cb-grade.selected {
+      background: linear-gradient(135deg, #3ECFCF, #2bb8b8);
+      border-color: #3ECFCF;
+      color: #0d0820;
+      box-shadow: 0 4px 16px rgba(62,207,207,0.45);
+    }
+
+    /* Calc state row */
+    .calc-state-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(108,99,255,0.08);
+      border: 1px solid rgba(108,99,255,0.15);
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin-bottom: 12px;
+    }
+    .calc-state-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .state-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.35);
+    }
+    .state-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .calc-state-sep {
+      font-size: 1.2rem;
+      color: rgba(108,99,255,0.5);
+      font-weight: 300;
+    }
+
+    /* Add to courses button */
+    .btn-add-to-courses {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #6C63FF, #3ECFCF);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+      box-shadow: 0 6px 20px rgba(108,99,255,0.35);
+      letter-spacing: 0.3px;
+    }
+    .btn-add-to-courses:hover {
+      opacity: 0.93;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(108,99,255,0.5);
+    }
+    .btn-add-to-courses:active { transform: translateY(0); }
 
     /* ════════════════════════════════════════
        COLLAPSIBLE PANELS
     ════════════════════════════════════════ */
-    .panel {
-      margin-bottom: 20px;
-    }
+    .panel { margin-bottom: 20px; }
     .panel-header {
       display: flex;
       align-items: center;
@@ -319,9 +555,7 @@
       border-radius: var(--radius-lg);
       transition: background var(--transition);
     }
-    .panel-header:hover {
-      background: rgba(108,99,255,0.04);
-    }
+    .panel-header:hover { background: rgba(108,99,255,0.04); }
     .panel-header-left {
       display: flex;
       align-items: center;
@@ -355,7 +589,6 @@
       max-height: 1200px;
       padding: 0 24px 24px;
     }
-    /* First panel — courses panel is always open */
     .panel-always-open .panel-header { cursor: default; }
     .panel-always-open .panel-body {
       max-height: none;
@@ -370,10 +603,6 @@
       align-items: center;
       gap: 10px;
       margin-bottom: 20px;
-    }
-    .section-label-row h2 {
-      font-size: 1.05rem;
-      font-weight: 700;
     }
     .count-badge {
       display: inline-flex;
@@ -417,18 +646,10 @@
       border-color: #ef4444;
       background: rgba(239,68,68,0.05);
     }
-    .course-row .inp-name {
-      flex: 1;
-      min-width: 0;
-    }
-    .course-row .inp-credit {
-      width: 72px;
-      flex-shrink: 0;
-    }
-    .course-row .inp-grade {
-      width: 90px;
-      flex-shrink: 0;
-    }
+    .course-row .inp-name  { flex: 1; min-width: 0; }
+    .course-row .inp-credit { width: 72px; flex-shrink: 0; }
+    .course-row .inp-grade  { width: 90px; flex-shrink: 0; }
+
     input[type="text"],
     input[type="number"],
     select {
@@ -477,7 +698,6 @@
       transform: translateY(-1px);
     }
 
-    /* Row action buttons */
     .row-actions {
       display: flex;
       gap: 10px;
@@ -544,7 +764,6 @@
     }
     .btn-calculate:active { transform: translateY(0); }
 
-    /* Inline error */
     .inline-error {
       display: none;
       align-items: center;
@@ -680,10 +899,10 @@
       margin-left: 8px;
     }
     .whatif-badge.green { background: rgba(34,197,94,0.15); color: #15803d; }
-    .whatif-badge.red   { background: rgba(239,68,68,0.15); color: #b91c1c; }
+    .whatif-badge.red   { background: rgba(239,68,68,0.15);  color: #b91c1c; }
 
     /* ════════════════════════════════════════
-       RIGHT — RESULTS PANEL
+       RIGHT COLUMN — RESULTS PANEL
     ════════════════════════════════════════ */
     .results-sticky {
       position: sticky;
@@ -714,7 +933,6 @@
     }
     .results-content.visible { display: block; }
 
-    /* GPA number */
     .gpa-display {
       text-align: center;
       margin-bottom: 20px;
@@ -739,13 +957,12 @@
       font-weight: 700;
       letter-spacing: 0.3px;
     }
-    .badge-summa   { background: rgba(34,197,94,0.15);   color: #15803d; border: 1px solid rgba(34,197,94,0.3); }
-    .badge-magna   { background: rgba(62,207,207,0.15);  color: #0e7490; border: 1px solid rgba(62,207,207,0.3); }
-    .badge-cum     { background: rgba(59,130,246,0.15);  color: #1d4ed8; border: 1px solid rgba(59,130,246,0.3); }
-    .badge-satisf  { background: rgba(249,115,22,0.15);  color: #c2410c; border: 1px solid rgba(249,115,22,0.3); }
-    .badge-needs   { background: rgba(239,68,68,0.15);   color: #b91c1c; border: 1px solid rgba(239,68,68,0.3); }
+    .badge-summa  { background: rgba(34,197,94,0.15);   color: #15803d; border: 1px solid rgba(34,197,94,0.3); }
+    .badge-magna  { background: rgba(62,207,207,0.15);  color: #0e7490; border: 1px solid rgba(62,207,207,0.3); }
+    .badge-cum    { background: rgba(59,130,246,0.15);  color: #1d4ed8; border: 1px solid rgba(59,130,246,0.3); }
+    .badge-satisf { background: rgba(249,115,22,0.15);  color: #c2410c; border: 1px solid rgba(249,115,22,0.3); }
+    .badge-needs  { background: rgba(239,68,68,0.15);   color: #b91c1c; border: 1px solid rgba(239,68,68,0.3); }
 
-    /* Stat chips */
     .stat-chips {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -774,26 +991,15 @@
       letter-spacing: 0.5px;
     }
 
-    /* Progress bar */
-    .progress-section {
-      margin-bottom: 20px;
-    }
+    .progress-section { margin-bottom: 20px; }
     .progress-label-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 8px;
     }
-    .progress-label {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-    .progress-value {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
+    .progress-label  { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+    .progress-value  { font-size: 0.8rem; font-weight: 700; color: var(--primary); }
     .progress-track {
       height: 10px;
       background: rgba(108,99,255,0.1);
@@ -808,7 +1014,6 @@
       transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Cumulative box */
     .cumulative-box {
       display: none;
       align-items: center;
@@ -825,7 +1030,6 @@
     .cumulative-box.visible { display: flex; }
     .cumulative-box i { color: var(--secondary); }
 
-    /* Summary table */
     .summary-heading {
       font-size: 0.9rem;
       font-weight: 700;
@@ -859,9 +1063,7 @@
       color: var(--text-primary);
       font-weight: 500;
     }
-    .summary-table tr:nth-child(even) td {
-      background: rgba(108,99,255,0.025);
-    }
+    .summary-table tr:nth-child(even) td { background: rgba(108,99,255,0.025); }
     .summary-table tr:last-child td { border-bottom: none; }
     .grade-tag {
       display: inline-block;
@@ -913,10 +1115,7 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .footer-social {
-      display: flex;
-      gap: 12px;
-    }
+    .footer-social { display: flex; gap: 12px; }
     .footer-social a {
       width: 38px; height: 38px;
       border-radius: 9px;
@@ -941,10 +1140,7 @@
       gap: 16px;
       flex-wrap: wrap;
     }
-    .footer-copy {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.4);
-    }
+    .footer-copy { font-size: 0.85rem; color: rgba(255,255,255,0.4); }
     .footer-home-link {
       font-size: 0.85rem;
       color: var(--secondary);
@@ -957,27 +1153,19 @@
        RESPONSIVE
     ════════════════════════════════════════ */
     @media (max-width: 880px) {
-      .calc-layout {
-        grid-template-columns: 1fr;
-      }
-      .results-sticky {
-        position: static;
-      }
+      .calc-layout { grid-template-columns: 1fr; }
+      .results-sticky { position: static; }
     }
     @media (max-width: 768px) {
       .nav-links, .btn-nav-home { display: none; }
       .hamburger { display: flex; }
       .cumulative-grid, .whatif-grid { grid-template-columns: 1fr; }
-      .stat-chips { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 520px) {
-      .course-row {
-        flex-wrap: wrap;
-      }
-      .course-row .inp-name { width: 100%; flex: none; }
+      .course-row { flex-wrap: wrap; }
+      .course-row .inp-name   { width: 100%; flex: none; }
       .course-row .inp-credit { width: calc(50% - 5px); }
       .course-row .inp-grade  { width: calc(50% - 5px); }
-      .stat-chips { grid-template-columns: 1fr 1fr 1fr; }
       .row-actions { flex-wrap: wrap; }
       .page-hero-deco { display: none; }
     }
@@ -999,7 +1187,7 @@
         <li><a href="calculator.html" class="active" aria-current="page">Calculator</a></li>
       </ul>
       <a href="home.html" class="btn-nav-home" aria-label="Back to Home page">
-        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        <i class="fa-solid fa-house" aria-hidden="true"></i>
         Back to Home
       </a>
       <button class="hamburger" id="hamburger" aria-label="Toggle mobile menu" aria-expanded="false">
@@ -1012,23 +1200,21 @@
   <div id="mobile-menu" role="dialog" aria-label="Mobile navigation" aria-modal="true">
     <a href="home.html">Home</a>
     <a href="calculator.html" class="active">Calculator</a>
-    <a href="home.html" class="btn-nav-home" style="margin-top:8px;">
-      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Home
-    </a>
+    <a href="home.html" class="btn-nav-home">Back to Home</a>
   </div>
 
   <!-- ════════════════════════════════════════
        PAGE HERO BANNER
   ════════════════════════════════════════ -->
-  <header class="page-hero" aria-labelledby="page-title">
+  <div class="page-hero">
     <div class="page-hero-deco" aria-hidden="true">
-      <i class="fa-solid fa-graduation-cap"></i>
+      <i class="fa-solid fa-calculator"></i>
     </div>
     <div class="page-hero-content">
-      <h1 id="page-title">GPA Calculator</h1>
-      <p>Track your academic performance with precision</p>
+      <h1>GPA Calculator</h1>
+      <p>Add your courses, hit Calculate, and see your GPA instantly</p>
     </div>
-  </header>
+  </div>
 
   <!-- ════════════════════════════════════════
        MAIN CONTENT
@@ -1039,61 +1225,81 @@
       <!-- ══════════════════════════
            LEFT COLUMN
       ══════════════════════════ -->
-      <section aria-label="Calculator inputs">
+      <div class="left-col">
 
-        <!-- Panel 1: Semester GPA (always open) -->
-        <article class="card panel panel-always-open" aria-label="Semester GPA Calculator">
-          <div class="panel-header" style="cursor:default;">
-            <div class="panel-header-left">
-              <i class="fa-solid fa-book-open" aria-hidden="true"></i>
-              <span>Semester Courses</span>
-            </div>
-          </div>
-          <div class="panel-body" style="max-height:none; padding: 0 24px 24px;">
-            <div class="section-label-row">
-              <h2 style="font-size:0.92rem; color: var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">
-                Course List
-              </h2>
-              <span class="count-badge" id="course-count" aria-live="polite" aria-label="Course count">3</span>
+        <!-- A: Physical Calculator Widget -->
+        <div class="card widget-calc" id="physical-calc">
+          <div class="widget-calc-body">
+
+            <!-- Brand label -->
+            <div class="widget-brand">GradeIQ <span>CALC</span></div>
+
+            <!-- Screen -->
+            <div class="calc-screen-wrap" id="calc-screen-wrap">
+              <div class="calc-screen-sub" id="calc-expression">0</div>
+              <div class="calc-screen-main" id="calc-display">0</div>
             </div>
 
-            <!-- Inline error -->
-            <div class="inline-error" id="inline-error" role="alert" aria-live="assertive">
-              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
-              <span id="inline-error-text">Please fix the highlighted fields before calculating.</span>
+            <!-- Number + operator buttons -->
+            <div class="calc-btn-grid">
+              <!-- Row 1 -->
+              <button class="cb cb-util" data-action="clear" aria-label="Clear">C</button>
+              <button class="cb cb-util" data-action="del" aria-label="Delete last digit">DEL</button>
+              <button class="cb cb-util" data-action="pct" aria-label="Percent">%</button>
+              <button class="cb cb-op" data-action="op" data-val="/" aria-label="Divide">÷</button>
+              <!-- Row 2 -->
+              <button class="cb cb-num" data-action="num" data-val="7" aria-label="7">7</button>
+              <button class="cb cb-num" data-action="num" data-val="8" aria-label="8">8</button>
+              <button class="cb cb-num" data-action="num" data-val="9" aria-label="9">9</button>
+              <button class="cb cb-op" data-action="op" data-val="*" aria-label="Multiply">×</button>
+              <!-- Row 3 -->
+              <button class="cb cb-num" data-action="num" data-val="4" aria-label="4">4</button>
+              <button class="cb cb-num" data-action="num" data-val="5" aria-label="5">5</button>
+              <button class="cb cb-num" data-action="num" data-val="6" aria-label="6">6</button>
+              <button class="cb cb-op" data-action="op" data-val="-" aria-label="Subtract">−</button>
+              <!-- Row 4 -->
+              <button class="cb cb-num" data-action="num" data-val="1" aria-label="1">1</button>
+              <button class="cb cb-num" data-action="num" data-val="2" aria-label="2">2</button>
+              <button class="cb cb-num" data-action="num" data-val="3" aria-label="3">3</button>
+              <button class="cb cb-op" data-action="op" data-val="+" aria-label="Add">+</button>
+              <!-- Row 5 -->
+              <button class="cb cb-num cb-zero" data-action="num" data-val="0" aria-label="0">0</button>
+              <button class="cb cb-num" data-action="dot" aria-label="Decimal point">.</button>
+              <button class="cb cb-equals" data-action="equals" aria-label="Equals">=</button>
             </div>
 
-            <!-- Column headers (visual only) -->
-            <div style="display:flex; gap:10px; padding: 0 12px 6px; font-size:0.72rem; font-weight:700; color:var(--text-dimmed); text-transform:uppercase; letter-spacing:0.5px;">
-              <span style="flex:1;">Course Name</span>
-              <span style="width:72px; text-align:center;">Credits</span>
-              <span style="width:90px; text-align:center;">Grade</span>
-              <span style="width:34px;"></span>
+            <!-- Grade selector section -->
+            <div class="grade-selector-section">
+              <div class="grade-selector-label">
+                <i class="fa-solid fa-star" aria-hidden="true"></i> Select Grade
+              </div>
+              <div class="grade-btn-grid" id="grade-btn-grid" role="group" aria-label="Select grade for course">
+                <!-- 13 grade buttons generated by JS -->
+              </div>
             </div>
 
-            <div id="courses-container" role="list" aria-label="Course rows">
-              <!-- Rows injected by JS -->
+            <!-- Selected state display -->
+            <div class="calc-state-row" aria-live="polite" aria-label="Current selection">
+              <div class="calc-state-item">
+                <span class="state-label">Credits</span>
+                <span class="state-val" id="state-credits">—</span>
+              </div>
+              <div class="calc-state-sep">+</div>
+              <div class="calc-state-item">
+                <span class="state-label">Grade</span>
+                <span class="state-val" id="state-grade">—</span>
+              </div>
             </div>
 
-            <div class="row-actions">
-              <button class="btn-add-course" id="btn-add-course" aria-label="Add a new course row">
-                <i class="fa-solid fa-plus" aria-hidden="true"></i>
-                Add Course
-              </button>
-              <button class="btn-clear-all" id="btn-clear-all" aria-label="Clear all course rows">
-                <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
-                Clear All
-              </button>
-            </div>
-
-            <button class="btn-calculate" id="btn-calculate" aria-label="Calculate GPA">
-              <i class="fa-solid fa-calculator" aria-hidden="true"></i>
-              Calculate GPA
+            <!-- Add to courses button -->
+            <button class="btn-add-to-courses" id="btn-add-to-courses" onclick="addFromCalc()" aria-label="Add calculator entry to course list">
+              <i class="fa-solid fa-plus-circle" aria-hidden="true"></i> Add to Courses
             </button>
-          </div>
-        </article>
 
-        <!-- Panel 2: Cumulative GPA (collapsible) -->
+          </div>
+        </div>
+
+        <!-- B: Cumulative GPA Panel (collapsible) -->
         <article class="card panel" id="panel-cumulative" aria-label="Cumulative GPA inputs">
           <div class="panel-header" role="button" tabindex="0" aria-expanded="false" aria-controls="body-cumulative" id="toggle-cumulative">
             <div class="panel-header-left">
@@ -1105,14 +1311,14 @@
           <div class="panel-body" id="body-cumulative">
             <div class="cumulative-grid">
               <div class="field-group">
-                <label for="prev-gpa">Previous Cumulative GPA</label>
+                <label for="prev-gpa">Previous GPA</label>
                 <input type="number" id="prev-gpa" name="prev-gpa"
                        min="0" max="4" step="0.01"
                        placeholder="e.g. 3.50"
                        aria-label="Previous cumulative GPA (0 to 4)" />
               </div>
               <div class="field-group">
-                <label for="prev-credits">Previous Credit Hours</label>
+                <label for="prev-credits">Previous Credits</label>
                 <input type="number" id="prev-credits" name="prev-credits"
                        min="0" step="1"
                        placeholder="e.g. 60"
@@ -1121,12 +1327,12 @@
             </div>
             <p class="helper-text">
               <i class="fa-solid fa-circle-info" aria-hidden="true" style="color:var(--secondary);"></i>
-              Enter your existing GPA to calculate combined cumulative GPA.
+              Enter your existing GPA to calculate combined cumulative GPA after this semester.
             </p>
           </div>
         </article>
 
-        <!-- Panel 3: Grade Scale Reference (collapsible) -->
+        <!-- C: Grade Scale Reference (collapsible) -->
         <article class="card panel" id="panel-scale" aria-label="Grade scale reference table">
           <div class="panel-header" role="button" tabindex="0" aria-expanded="false" aria-controls="body-scale" id="toggle-scale">
             <div class="panel-header-left">
@@ -1140,30 +1346,30 @@
               <thead>
                 <tr>
                   <th scope="col">Grade</th>
-                  <th scope="col">Grade Points</th>
-                  <th scope="col">Description</th>
+                  <th scope="col">Points</th>
+                  <th scope="col">Percentage</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td><span class="grade-pill">A+</span></td><td>4.0</td><td>Excellent</td></tr>
-                <tr><td><span class="grade-pill">A</span></td><td>4.0</td><td>Excellent</td></tr>
-                <tr><td><span class="grade-pill">A−</span></td><td>3.7</td><td>Excellent</td></tr>
-                <tr><td><span class="grade-pill">B+</span></td><td>3.3</td><td>Good</td></tr>
-                <tr><td><span class="grade-pill">B</span></td><td>3.0</td><td>Good</td></tr>
-                <tr><td><span class="grade-pill">B−</span></td><td>2.7</td><td>Good</td></tr>
-                <tr><td><span class="grade-pill">C+</span></td><td>2.3</td><td>Average</td></tr>
-                <tr><td><span class="grade-pill">C</span></td><td>2.0</td><td>Average</td></tr>
-                <tr><td><span class="grade-pill">C−</span></td><td>1.7</td><td>Average</td></tr>
-                <tr><td><span class="grade-pill">D+</span></td><td>1.3</td><td>Below Average</td></tr>
-                <tr><td><span class="grade-pill">D</span></td><td>1.0</td><td>Below Average</td></tr>
-                <tr><td><span class="grade-pill">D−</span></td><td>0.7</td><td>Below Average</td></tr>
-                <tr><td><span class="grade-pill">F</span></td><td>0.0</td><td>Failing</td></tr>
+                <tr><td><span class="grade-pill">A+</span></td><td>4.0</td><td>97–100%</td></tr>
+                <tr><td><span class="grade-pill">A</span></td><td>4.0</td><td>93–96%</td></tr>
+                <tr><td><span class="grade-pill">A-</span></td><td>3.7</td><td>90–92%</td></tr>
+                <tr><td><span class="grade-pill">B+</span></td><td>3.3</td><td>87–89%</td></tr>
+                <tr><td><span class="grade-pill">B</span></td><td>3.0</td><td>83–86%</td></tr>
+                <tr><td><span class="grade-pill">B-</span></td><td>2.7</td><td>80–82%</td></tr>
+                <tr><td><span class="grade-pill">C+</span></td><td>2.3</td><td>77–79%</td></tr>
+                <tr><td><span class="grade-pill">C</span></td><td>2.0</td><td>73–76%</td></tr>
+                <tr><td><span class="grade-pill">C-</span></td><td>1.7</td><td>70–72%</td></tr>
+                <tr><td><span class="grade-pill">D+</span></td><td>1.3</td><td>67–69%</td></tr>
+                <tr><td><span class="grade-pill">D</span></td><td>1.0</td><td>63–66%</td></tr>
+                <tr><td><span class="grade-pill">D-</span></td><td>0.7</td><td>60–62%</td></tr>
+                <tr><td><span class="grade-pill">F</span></td><td>0.0</td><td>0–59%</td></tr>
               </tbody>
             </table>
           </div>
         </article>
 
-        <!-- Panel 4: What-If Analyzer (collapsible) -->
+        <!-- D: What-If Analyzer (collapsible) -->
         <article class="card panel" id="panel-whatif" aria-label="What-If GPA Analyzer">
           <div class="panel-header" role="button" tabindex="0" aria-expanded="false" aria-controls="body-whatif" id="toggle-whatif">
             <div class="panel-header-left">
@@ -1200,88 +1406,131 @@
           </div>
         </article>
 
-      </section><!-- /left column -->
+      </div><!-- /left-col -->
 
       <!-- ══════════════════════════
-           RIGHT COLUMN — Results
+           RIGHT COLUMN — Courses + Results
       ══════════════════════════ -->
-      <aside aria-label="GPA Results">
-        <div class="results-sticky">
-          <div class="card" id="results-card">
+      <div class="right-col results-sticky">
 
-            <!-- Placeholder state -->
-            <div class="results-placeholder" id="results-placeholder" aria-hidden="false">
-              <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
-              <p>Your results will appear here</p>
+        <!-- Course List Card -->
+        <article class="card panel panel-always-open" aria-label="Semester GPA Calculator" style="margin-bottom:20px;">
+          <div class="panel-header" style="cursor:default;">
+            <div class="panel-header-left">
+              <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+              <span>Semester Courses</span>
+            </div>
+          </div>
+          <div class="panel-body" style="max-height:none; padding: 0 24px 24px;">
+            <div class="section-label-row">
+              <h2 style="font-size:0.92rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">
+                Course List
+              </h2>
+              <span class="count-badge" id="course-count" aria-live="polite" aria-label="Course count">3</span>
             </div>
 
-            <!-- Results content (hidden until calculated) -->
-            <div class="results-content" id="results-content" aria-live="polite">
+            <!-- Inline error -->
+            <div class="inline-error" id="inline-error" role="alert" aria-live="assertive">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+              <span id="inline-error-text">Please fix the highlighted fields before calculating.</span>
+            </div>
 
-              <!-- GPA Number + Classification -->
-              <div class="gpa-display">
-                <span class="gpa-number" id="gpa-number" aria-label="Semester GPA">0.00</span>
-                <span class="classification-badge" id="classification-badge">—</span>
-              </div>
+            <!-- Column headers (visual only) -->
+            <div style="display:flex; gap:10px; padding: 0 12px 6px; font-size:0.72rem; font-weight:700; color:var(--text-dimmed); text-transform:uppercase; letter-spacing:0.5px;" aria-hidden="true">
+              <span style="flex:1;">Course Name</span>
+              <span style="width:72px; text-align:center;">Credits</span>
+              <span style="width:90px; text-align:center;">Grade</span>
+              <span style="width:34px;"></span>
+            </div>
 
-              <!-- Cumulative GPA box (shown if prev GPA entered) -->
-              <div class="cumulative-box" id="cumulative-box" aria-live="polite">
-                <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
-                <span>Cumulative GPA: <strong id="cumulative-gpa-value">0.00</strong></span>
-              </div>
+            <div id="courses-container" role="list" aria-label="Course rows"></div>
 
-              <!-- Stat Chips -->
-              <div class="stat-chips" role="group" aria-label="GPA statistics">
-                <div class="stat-chip">
-                  <div class="stat-chip-value" id="chip-credits">0</div>
-                  <div class="stat-chip-label">Credits</div>
-                </div>
-                <div class="stat-chip">
-                  <div class="stat-chip-value" id="chip-points">0.0</div>
-                  <div class="stat-chip-label">Grade Pts</div>
-                </div>
-                <div class="stat-chip">
-                  <div class="stat-chip-value" id="chip-courses">0</div>
-                  <div class="stat-chip-label">Courses</div>
-                </div>
-              </div>
+            <div class="row-actions">
+              <button class="btn-add-course" id="btn-add-course" aria-label="Add a new course row">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Course
+              </button>
+              <button class="btn-clear-all" id="btn-clear-all" aria-label="Clear all course rows">
+                <i class="fa-solid fa-trash-can" aria-hidden="true"></i> Clear All
+              </button>
+            </div>
 
-              <!-- Progress Bar -->
-              <div class="progress-section" aria-label="GPA progress out of 4.0">
-                <div class="progress-label-row">
-                  <span class="progress-label">GPA Scale</span>
-                  <span class="progress-value" id="progress-label-value">0 / 4.0</span>
-                </div>
-                <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" id="progress-track">
-                  <div class="progress-fill" id="progress-fill"></div>
-                </div>
-              </div>
+            <button class="btn-calculate" id="btn-calculate" aria-label="Calculate GPA">
+              <i class="fa-solid fa-calculator" aria-hidden="true"></i>
+              Calculate GPA
+            </button>
+          </div>
+        </article>
 
-              <!-- Semester Summary Table -->
-              <div class="summary-heading">
-                <i class="fa-solid fa-list-check" aria-hidden="true" style="color:var(--primary);"></i>
-                Semester Summary
-              </div>
-              <div style="overflow-x: auto;">
-                <table class="summary-table" aria-label="Semester course summary">
-                  <thead>
-                    <tr>
-                      <th scope="col">Course</th>
-                      <th scope="col">Cr.</th>
-                      <th scope="col">Grade</th>
-                      <th scope="col">Points</th>
-                    </tr>
-                  </thead>
-                  <tbody id="summary-tbody">
-                    <!-- Populated by JS -->
-                  </tbody>
-                </table>
-              </div>
+        <!-- Results Panel -->
+        <div class="card" id="results-card">
+          <div class="results-placeholder" id="results-placeholder">
+            <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+            <p>Your results will appear here</p>
+          </div>
+          <div class="results-content" id="results-content" aria-live="polite">
 
-            </div><!-- /results-content -->
-          </div><!-- /card -->
-        </div><!-- /results-sticky -->
-      </aside><!-- /right column -->
+            <!-- GPA Number + Classification -->
+            <div class="gpa-display">
+              <span class="gpa-number" id="gpa-number" aria-label="Semester GPA">0.00</span>
+              <span class="classification-badge" id="classification-badge">—</span>
+            </div>
+
+            <!-- Cumulative GPA box -->
+            <div class="cumulative-box" id="cumulative-box" aria-live="polite">
+              <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+              <span>Cumulative GPA: <strong id="cumulative-gpa-value">0.00</strong></span>
+            </div>
+
+            <!-- Stat Chips -->
+            <div class="stat-chips" role="group" aria-label="GPA statistics">
+              <div class="stat-chip">
+                <div class="stat-chip-value" id="chip-courses">0</div>
+                <div class="stat-chip-label">Courses</div>
+              </div>
+              <div class="stat-chip">
+                <div class="stat-chip-value" id="chip-credits">0</div>
+                <div class="stat-chip-label">Credits</div>
+              </div>
+              <div class="stat-chip">
+                <div class="stat-chip-value" id="chip-points">0.0</div>
+                <div class="stat-chip-label">Grade Pts</div>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-section" aria-label="GPA progress out of 4.0">
+              <div class="progress-label-row">
+                <span class="progress-label">GPA Scale</span>
+                <span class="progress-value" id="progress-label-value">0 / 4.0</span>
+              </div>
+              <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" id="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+              </div>
+            </div>
+
+            <!-- Summary Table -->
+            <div class="summary-heading">
+              <i class="fa-solid fa-list-check" aria-hidden="true" style="color:var(--primary);"></i>
+              Semester Summary
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="summary-table" aria-label="Semester course summary">
+                <thead>
+                  <tr>
+                    <th scope="col">Course</th>
+                    <th scope="col">Cr.</th>
+                    <th scope="col">Grade</th>
+                    <th scope="col">Points</th>
+                  </tr>
+                </thead>
+                <tbody id="summary-tbody"></tbody>
+              </table>
+            </div>
+
+          </div><!-- /results-content -->
+        </div><!-- /results card -->
+
+      </div><!-- /right-col -->
 
     </div><!-- /calc-layout -->
   </main>
@@ -1296,160 +1545,376 @@
           <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
           <span>GradeIQ</span>
         </a>
-        <nav class="footer-social" aria-label="Social media links">
-          <a href="#" aria-label="GitHub" title="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
-          <a href="#" aria-label="LinkedIn" title="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
-          <a href="#" aria-label="Twitter" title="Twitter"><i class="fa-brands fa-twitter" aria-hidden="true"></i></a>
-        </nav>
+        <div class="footer-social">
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+        </div>
       </div>
       <div class="footer-bottom-row">
-        <p class="footer-copy">&copy; 2025 GradeIQ. All rights reserved.</p>
-        <a href="home.html" class="footer-home-link">
-          <i class="fa-solid fa-house" aria-hidden="true"></i> Back to Home
-        </a>
+        <p class="footer-copy">&copy; 2024 GradeIQ. All rights reserved.</p>
+        <a href="home.html" class="footer-home-link">← Back to Home</a>
       </div>
     </div>
   </footer>
 
   <!-- ════════════════════════════════════════
        JAVASCRIPT
-  ════════════════════════════════════════ -->
+  ════════════════════════════════════════ */
   <script>
     'use strict';
 
-    /* ─── Grade Scale ─────────────────────── */
-    const GRADES = {
-      'A+': 4.0, 'A': 4.0, 'A-': 3.7,
-      'B+': 3.3, 'B': 3.0, 'B-': 2.7,
-      'C+': 2.3, 'C': 2.0, 'C-': 1.7,
-      'D+': 1.3, 'D': 1.0, 'D-': 0.7,
-      'F':  0.0
+    /* ─── Grade Scale ──────────────────────── */
+    const GRADE_LIST = [
+      { label: 'A+', pts: 4.0 }, { label: 'A',  pts: 4.0 }, { label: 'A-', pts: 3.7 },
+      { label: 'B+', pts: 3.3 }, { label: 'B',  pts: 3.0 }, { label: 'B-', pts: 2.7 },
+      { label: 'C+', pts: 2.3 }, { label: 'C',  pts: 2.0 }, { label: 'C-', pts: 1.7 },
+      { label: 'D+', pts: 1.3 }, { label: 'D',  pts: 1.0 }, { label: 'D-', pts: 0.7 },
+      { label: 'F',  pts: 0.0 }
+    ];
+    const GRADES = {};
+    GRADE_LIST.forEach(function(g) { GRADES[g.label] = g.pts; });
+    const GRADE_KEYS = GRADE_LIST.map(function(g) { return g.label; });
+
+    /* ─── Physical Calculator State ────────── */
+    var calcState = {
+      display: '0',
+      expression: '',
+      operator: null,
+      operand1: null,
+      fresh: true,
+      selectedGrade: null
     };
-    const GRADE_KEYS = Object.keys(GRADES);
 
-    /* ─── State ───────────────────────────── */
-    let lastCalculated = null; // { semGPA, totalCredits, totalPoints, courseCount }
+    /* ─── GPA Calculator State ─────────────── */
+    var lastCalculated = null;
+    var rowIdCounter = 0;
+    var autoCourseName = 0; // counter for "Course N" from widget
 
-    /* ─── DOM refs ────────────────────────── */
-    const coursesContainer  = document.getElementById('courses-container');
-    const courseCountBadge  = document.getElementById('course-count');
-    const inlineError       = document.getElementById('inline-error');
-    const inlineErrorText   = document.getElementById('inline-error-text');
-    const btnAddCourse      = document.getElementById('btn-add-course');
-    const btnClearAll       = document.getElementById('btn-clear-all');
-    const btnCalculate      = document.getElementById('btn-calculate');
-    const prevGpaInput      = document.getElementById('prev-gpa');
-    const prevCreditsInput  = document.getElementById('prev-credits');
-    const resultsPlaceholder = document.getElementById('results-placeholder');
-    const resultsContent    = document.getElementById('results-content');
-    const gpaNumber         = document.getElementById('gpa-number');
-    const classificationBadge = document.getElementById('classification-badge');
-    const cumulativeBox     = document.getElementById('cumulative-box');
-    const cumulativeGpaValue = document.getElementById('cumulative-gpa-value');
-    const chipCredits       = document.getElementById('chip-credits');
-    const chipPoints        = document.getElementById('chip-points');
-    const chipCourses       = document.getElementById('chip-courses');
-    const progressFill      = document.getElementById('progress-fill');
-    const progressLabelValue = document.getElementById('progress-label-value');
-    const progressTrack     = document.getElementById('progress-track');
-    const summaryTbody      = document.getElementById('summary-tbody');
-    const btnAnalyze        = document.getElementById('btn-analyze');
-    const whatifResult      = document.getElementById('whatif-result');
-    const targetGpaInput    = document.getElementById('target-gpa');
-    const remainingCreditsInput = document.getElementById('remaining-credits');
+    /* ─── DOM refs ──────────────────────────── */
+    var calcDisplay     = document.getElementById('calc-display');
+    var calcExpression  = document.getElementById('calc-expression');
+    var calcScreenWrap  = document.getElementById('calc-screen-wrap');
+    var stateCredits    = document.getElementById('state-credits');
+    var stateGrade      = document.getElementById('state-grade');
+    var gradeBtnGrid    = document.getElementById('grade-btn-grid');
 
-    /* ─── Build grade <select> options ───── */
-    function buildGradeOptions(selected) {
-      return GRADE_KEYS.map(g =>
-        `<option value="${g}" ${g === selected ? 'selected' : ''}>${g}</option>`
-      ).join('');
+    var coursesContainer   = document.getElementById('courses-container');
+    var courseCountBadge   = document.getElementById('course-count');
+    var inlineError        = document.getElementById('inline-error');
+    var inlineErrorText    = document.getElementById('inline-error-text');
+    var btnAddCourse       = document.getElementById('btn-add-course');
+    var btnClearAll        = document.getElementById('btn-clear-all');
+    var btnCalculate       = document.getElementById('btn-calculate');
+    var prevGpaInput       = document.getElementById('prev-gpa');
+    var prevCreditsInput   = document.getElementById('prev-credits');
+    var resultsPlaceholder = document.getElementById('results-placeholder');
+    var resultsContent     = document.getElementById('results-content');
+    var gpaNumber          = document.getElementById('gpa-number');
+    var classificationBadge = document.getElementById('classification-badge');
+    var cumulativeBox      = document.getElementById('cumulative-box');
+    var cumulativeGpaValue = document.getElementById('cumulative-gpa-value');
+    var chipCredits        = document.getElementById('chip-credits');
+    var chipPoints         = document.getElementById('chip-points');
+    var chipCourses        = document.getElementById('chip-courses');
+    var progressFill       = document.getElementById('progress-fill');
+    var progressLabelValue = document.getElementById('progress-label-value');
+    var progressTrack      = document.getElementById('progress-track');
+    var summaryTbody       = document.getElementById('summary-tbody');
+    var btnAnalyze         = document.getElementById('btn-analyze');
+    var whatifResult       = document.getElementById('whatif-result');
+    var targetGpaInput     = document.getElementById('target-gpa');
+    var remainingCreditsInput = document.getElementById('remaining-credits');
+
+    /* ══════════════════════════════════════════
+       PHYSICAL CALCULATOR LOGIC
+    ══════════════════════════════════════════ */
+
+    function updateCalcScreen() {
+      calcDisplay.textContent    = calcState.display;
+      calcExpression.textContent = calcState.expression || '0';
+      stateCredits.textContent   = calcState.display !== '0' && calcState.display !== '' ? calcState.display : '—';
+      stateGrade.textContent     = calcState.selectedGrade || '—';
     }
 
-    /* ─── Create a course row ─────────────── */
-    let rowIdCounter = 0;
-    function createCourseRow(name = '', credits = '', grade = 'A') {
-      const id = ++rowIdCounter;
-      const row = document.createElement('div');
+    function handleCalcBtn(action, val) {
+      switch (action) {
+        case 'num': {
+          if (calcState.fresh) {
+            calcState.display = val === '0' ? '0' : val;
+            calcState.fresh = false;
+          } else {
+            if (calcState.display === '0') {
+              calcState.display = val;
+            } else if (calcState.display.replace('.','').replace('-','').length < 10) {
+              calcState.display += val;
+            }
+          }
+          break;
+        }
+        case 'dot': {
+          if (calcState.fresh) {
+            calcState.display = '0.';
+            calcState.fresh = false;
+          } else if (calcState.display.indexOf('.') === -1) {
+            calcState.display += '.';
+          }
+          break;
+        }
+        case 'op': {
+          var current = parseFloat(calcState.display);
+          if (calcState.operator !== null && !calcState.fresh) {
+            // chain calculation
+            var result = doArithmetic(calcState.operand1, current, calcState.operator);
+            calcState.display = formatCalcResult(result);
+            calcState.operand1 = result;
+          } else {
+            calcState.operand1 = current;
+          }
+          calcState.operator  = val;
+          calcState.expression = calcState.display + ' ' + symbolForOp(val);
+          calcState.fresh = true;
+          break;
+        }
+        case 'equals': {
+          if (calcState.operator !== null && calcState.operand1 !== null) {
+            var b = parseFloat(calcState.display);
+            var res = doArithmetic(calcState.operand1, b, calcState.operator);
+            calcState.expression = formatCalcResult(calcState.operand1) + ' ' + symbolForOp(calcState.operator) + ' ' + formatCalcResult(b) + ' =';
+            calcState.display = formatCalcResult(res);
+            calcState.operator  = null;
+            calcState.operand1  = null;
+            calcState.fresh = true;
+          }
+          break;
+        }
+        case 'clear': {
+          calcState.display    = '0';
+          calcState.expression = '';
+          calcState.operator   = null;
+          calcState.operand1   = null;
+          calcState.fresh      = true;
+          break;
+        }
+        case 'del': {
+          if (calcState.fresh || calcState.display.length <= 1) {
+            calcState.display = '0';
+            calcState.fresh = true;
+          } else {
+            calcState.display = calcState.display.slice(0, -1) || '0';
+          }
+          break;
+        }
+        case 'pct': {
+          var v = parseFloat(calcState.display);
+          if (!isNaN(v)) {
+            calcState.display = formatCalcResult(v / 100);
+            calcState.fresh = true;
+          }
+          break;
+        }
+      }
+      updateCalcScreen();
+    }
+
+    function doArithmetic(a, b, op) {
+      switch (op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': return b === 0 ? 'Error' : a / b;
+        default:  return b;
+      }
+    }
+
+    function formatCalcResult(val) {
+      if (val === 'Error') return 'Error';
+      if (isNaN(val) || !isFinite(val)) return 'Error';
+      // Avoid floating-point display chaos
+      var s = parseFloat(val.toFixed(10)).toString();
+      return s;
+    }
+
+    function symbolForOp(op) {
+      return { '+': '+', '-': '−', '*': '×', '/': '÷' }[op] || op;
+    }
+
+    /* Wire up calculator buttons via event delegation */
+    document.getElementById('physical-calc').addEventListener('click', function(e) {
+      var btn = e.target.closest('.cb');
+      if (!btn) return;
+      var action = btn.dataset.action;
+      var val    = btn.dataset.val;
+      if (action) handleCalcBtn(action, val);
+    });
+
+    /* Grade buttons */
+    function buildGradeBtns() {
+      gradeBtnGrid.innerHTML = '';
+      GRADE_LIST.forEach(function(g) {
+        var btn = document.createElement('button');
+        btn.className = 'cb cb-grade';
+        btn.textContent = g.label;
+        btn.setAttribute('aria-label', 'Grade ' + g.label + ' (' + g.pts.toFixed(1) + ' points)');
+        btn.dataset.grade = g.label;
+        btn.addEventListener('click', function() {
+          // toggle off if already selected
+          if (calcState.selectedGrade === g.label) {
+            calcState.selectedGrade = null;
+            btn.classList.remove('selected');
+          } else {
+            // deselect all
+            gradeBtnGrid.querySelectorAll('.cb-grade').forEach(function(b) {
+              b.classList.remove('selected');
+            });
+            calcState.selectedGrade = g.label;
+            btn.classList.add('selected');
+          }
+          updateCalcScreen();
+        });
+        gradeBtnGrid.appendChild(btn);
+      });
+    }
+
+    /* Add from calculator to course list */
+    function addFromCalc() {
+      var credits = parseFloat(calcState.display);
+      var grade   = calcState.selectedGrade;
+
+      if (!grade) {
+        flashScreen('red');
+        return;
+      }
+      if (isNaN(credits) || credits <= 0 || calcState.display === 'Error') {
+        flashScreen('red');
+        return;
+      }
+
+      autoCourseName++;
+      addCourseRow('Course ' + autoCourseName, credits, grade);
+      flashScreen('green');
+
+      // Reset calc display for next entry (keep grade selected for convenience)
+      calcState.display    = '0';
+      calcState.expression = '';
+      calcState.operator   = null;
+      calcState.operand1   = null;
+      calcState.fresh      = true;
+      updateCalcScreen();
+    }
+
+    function flashScreen(color) {
+      calcScreenWrap.classList.remove('flash-green', 'flash-red');
+      // Force reflow
+      void calcScreenWrap.offsetWidth;
+      calcScreenWrap.classList.add('flash-' + color);
+      setTimeout(function() {
+        calcScreenWrap.classList.remove('flash-green', 'flash-red');
+      }, 500);
+    }
+
+    /* ══════════════════════════════════════════
+       COURSE ROW MANAGEMENT
+    ══════════════════════════════════════════ */
+
+    function buildGradeOptions(selected) {
+      return GRADE_KEYS.map(function(g) {
+        return '<option value="' + g + '"' + (g === selected ? ' selected' : '') + '>' + g + '</option>';
+      }).join('');
+    }
+
+    function addCourseRow(name, credits, grade) {
+      name    = (name    !== undefined) ? name    : '';
+      credits = (credits !== undefined) ? credits : '';
+      grade   = (grade   !== undefined) ? grade   : 'A';
+
+      var id  = ++rowIdCounter;
+      var row = document.createElement('div');
       row.className = 'course-row';
       row.setAttribute('role', 'listitem');
       row.dataset.rowId = id;
-      row.innerHTML = `
-        <label for="name-${id}" class="visually-hidden">Course name</label>
-        <input class="inp-name" type="text" id="name-${id}" name="name-${id}"
-               placeholder="e.g. Mathematics 101" value="${name}"
-               aria-label="Course name" />
-        <label for="credits-${id}" class="visually-hidden">Credit hours</label>
-        <input class="inp-credit" type="number" id="credits-${id}" name="credits-${id}"
-               placeholder="Cr." min="1" max="6" value="${credits}"
-               aria-label="Credit hours (1–6)" />
-        <label for="grade-${id}" class="visually-hidden">Grade</label>
-        <select class="inp-grade" id="grade-${id}" name="grade-${id}" aria-label="Grade">
-          ${buildGradeOptions(grade)}
-        </select>
-        <button class="btn-delete-row" aria-label="Remove this course row" data-delete="${id}">
-          <i class="fa-solid fa-trash" aria-hidden="true"></i>
-        </button>
-      `;
+      row.innerHTML =
+        '<label for="name-'   + id + '" class="visually-hidden">Course name</label>' +
+        '<input class="inp-name" type="text" id="name-' + id + '" name="name-' + id + '"' +
+          ' placeholder="e.g. Mathematics 101" value="' + escapeHtml(String(name)) + '"' +
+          ' aria-label="Course name" />' +
+        '<label for="credits-' + id + '" class="visually-hidden">Credit hours</label>' +
+        '<input class="inp-credit" type="number" id="credits-' + id + '" name="credits-' + id + '"' +
+          ' placeholder="Cr." min="0.5" step="0.5" value="' + (credits !== '' ? credits : '') + '"' +
+          ' aria-label="Credit hours" />' +
+        '<label for="grade-' + id + '" class="visually-hidden">Grade</label>' +
+        '<select class="inp-grade" id="grade-' + id + '" name="grade-' + id + '" aria-label="Grade">' +
+          buildGradeOptions(grade) +
+        '</select>' +
+        '<button class="btn-delete-row" aria-label="Remove this course row" data-delete="' + id + '">' +
+          '<i class="fa-solid fa-trash" aria-hidden="true"></i>' +
+        '</button>';
+
+      coursesContainer.appendChild(row);
+      updateCourseCount();
       return row;
     }
 
     function updateCourseCount() {
-      const n = coursesContainer.querySelectorAll('.course-row').length;
+      var n = coursesContainer.querySelectorAll('.course-row').length;
       courseCountBadge.textContent = n;
     }
 
-    /* ─── Delete handler (event delegation) ─ */
-    coursesContainer.addEventListener('click', function (e) {
-      const btn = e.target.closest('[data-delete]');
+    /* Delete handler (event delegation) */
+    coursesContainer.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-delete]');
       if (!btn) return;
-      const row = btn.closest('.course-row');
+      var row = btn.closest('.course-row');
       if (row) {
         row.remove();
         updateCourseCount();
       }
     });
 
-    /* ─── Add Course ─────────────────────── */
-    btnAddCourse.addEventListener('click', function () {
-      const row = createCourseRow();
-      coursesContainer.appendChild(row);
-      updateCourseCount();
+    /* Add Course button */
+    btnAddCourse.addEventListener('click', function() {
+      var row = addCourseRow();
       row.querySelector('.inp-name').focus();
     });
 
-    /* ─── Clear All ──────────────────────── */
-    btnClearAll.addEventListener('click', function () {
+    /* Clear All */
+    btnClearAll.addEventListener('click', function() {
       coursesContainer.innerHTML = '';
       updateCourseCount();
       hideError();
       hideResults();
       lastCalculated = null;
       resetWhatif();
+      addCourseRow(); // leave one fresh row
     });
 
-    /* ─── Validation ──────────────────────── */
+    /* ══════════════════════════════════════════
+       VALIDATION
+    ══════════════════════════════════════════ */
     function validate() {
-      const rows = coursesContainer.querySelectorAll('.course-row');
-      let valid = true;
-      let firstError = null;
-      rows.forEach(row => {
-        const creditInput = row.querySelector('.inp-credit');
-        const credits = parseFloat(creditInput.value);
-        if (isNaN(credits) || credits < 1 || credits > 6) {
+      var rows = coursesContainer.querySelectorAll('.course-row');
+      if (rows.length === 0) {
+        showError('Please add at least one course before calculating.');
+        return false;
+      }
+      var valid = true;
+      var firstErrorRow = null;
+      rows.forEach(function(row) {
+        var creditInput = row.querySelector('.inp-credit');
+        var credits = parseFloat(creditInput.value);
+        if (isNaN(credits) || credits <= 0) {
           row.classList.add('row-error');
-          if (!firstError) firstError = row;
+          if (!firstErrorRow) firstErrorRow = row;
           valid = false;
         } else {
           row.classList.remove('row-error');
         }
       });
       if (!valid) {
-        showError('Please enter valid credit hours (1–6) for highlighted courses.');
-        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      if (rows.length === 0) {
-        showError('Please add at least one course before calculating.');
-        valid = false;
+        showError('Please enter valid credit hours for all highlighted courses.');
+        if (firstErrorRow) {
+          firstErrorRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       }
       return valid;
     }
@@ -1460,96 +1925,107 @@
     }
     function hideError() {
       inlineError.classList.remove('visible');
+      coursesContainer.querySelectorAll('.course-row').forEach(function(r) {
+        r.classList.remove('row-error');
+      });
     }
 
-    /* ─── GPA Calculation ─────────────────── */
+    /* ══════════════════════════════════════════
+       GPA CALCULATION
+    ══════════════════════════════════════════ */
     function calculateGPA() {
       hideError();
       if (!validate()) return;
 
-      const rows = coursesContainer.querySelectorAll('.course-row');
-      let totalPoints = 0;
-      let totalCredits = 0;
-      const courseData = [];
+      var rows = coursesContainer.querySelectorAll('.course-row');
+      var totalPoints  = 0;
+      var totalCredits = 0;
+      var courseData   = [];
 
-      rows.forEach(row => {
-        const nameInput   = row.querySelector('.inp-name');
-        const creditInput = row.querySelector('.inp-credit');
-        const gradeSelect = row.querySelector('.inp-grade');
+      rows.forEach(function(row) {
+        var nameInput   = row.querySelector('.inp-name');
+        var creditInput = row.querySelector('.inp-credit');
+        var gradeSelect = row.querySelector('.inp-grade');
 
-        const name    = nameInput.value.trim() || 'Unnamed Course';
-        const credits = parseFloat(creditInput.value);
-        const grade   = gradeSelect.value;
-        const pts     = GRADES[grade];
+        var name    = nameInput.value.trim() || 'Unnamed Course';
+        var credits = parseFloat(creditInput.value);
+        var grade   = gradeSelect.value;
+        var pts     = GRADES[grade];
 
         totalPoints  += credits * pts;
         totalCredits += credits;
 
-        courseData.push({ name, credits, grade, points: +(credits * pts).toFixed(2) });
+        courseData.push({
+          name:   name,
+          credits: credits,
+          grade:  grade,
+          points: parseFloat((credits * pts).toFixed(2))
+        });
       });
 
-      const semesterGPA = totalCredits > 0 ? totalPoints / totalCredits : 0;
+      var semesterGPA = totalCredits > 0 ? totalPoints / totalCredits : 0;
 
-      /* Cumulative */
-      const prevGPA     = parseFloat(prevGpaInput.value) || 0;
-      const prevCredits = parseFloat(prevCreditsInput.value) || 0;
-      let cumulativeGPA = null;
+      /* Cumulative GPA */
+      var prevGPA     = parseFloat(prevGpaInput.value) || 0;
+      var prevCredits = parseFloat(prevCreditsInput.value) || 0;
+      var cumulativeGPA = null;
       if (prevCredits > 0) {
         cumulativeGPA = (totalPoints + prevGPA * prevCredits) / (totalCredits + prevCredits);
       }
 
       /* Store for what-if */
       lastCalculated = {
-        semGPA: semesterGPA,
-        totalCredits,
-        totalPoints,
-        courseCount: courseData.length
+        semGPA:      semesterGPA,
+        totalCredits: totalCredits,
+        totalPoints:  totalPoints,
+        courseCount:  courseData.length
       };
 
-      /* Render results */
       renderResults(semesterGPA, cumulativeGPA, totalCredits, totalPoints, courseData.length, courseData);
       resetWhatif();
     }
 
-    /* ─── Count-up animation ─────────────── */
+    /* ── Count-up animation ── */
     function countUp(element, from, to, duration) {
-      const start = performance.now();
+      var start = performance.now();
       function step(now) {
-        const elapsed = now - start;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
-        const value = from + (to - from) * eased;
+        var elapsed  = now - start;
+        var progress = Math.min(elapsed / duration, 1);
+        var eased    = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
+        var value    = from + (to - from) * eased;
         element.textContent = value.toFixed(2);
-        if (progress < 1) requestAnimationFrame(step);
-        else element.textContent = to.toFixed(2);
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          element.textContent = to.toFixed(2);
+        }
       }
       requestAnimationFrame(step);
     }
 
-    /* ─── Classification ─────────────────── */
+    /* ── Classification ── */
     function getClassification(gpa) {
-      if (gpa >= 3.7) return { label: 'Summa Cum Laude', cls: 'badge-summa' };
-      if (gpa >= 3.3) return { label: 'Magna Cum Laude', cls: 'badge-magna' };
-      if (gpa >= 3.0) return { label: 'Cum Laude',       cls: 'badge-cum'   };
-      if (gpa >= 2.0) return { label: 'Satisfactory',    cls: 'badge-satisf'};
-      return             { label: 'Needs Improvement', cls: 'badge-needs' };
+      if (gpa >= 3.9) return { label: 'Summa Cum Laude', cls: 'badge-summa' };
+      if (gpa >= 3.7) return { label: 'Magna Cum Laude', cls: 'badge-magna' };
+      if (gpa >= 3.5) return { label: 'Cum Laude',       cls: 'badge-cum'   };
+      if (gpa >= 2.0) return { label: 'Satisfactory',    cls: 'badge-satisf' };
+      return               { label: 'Needs Improvement', cls: 'badge-needs'  };
     }
 
-    /* ─── Render Results ─────────────────── */
+    /* ── Render Results ── */
     function renderResults(semGPA, cumGPA, credits, points, courseCount, courses) {
-      /* Show results panel */
+      /* Show panel */
       resultsPlaceholder.style.display = 'none';
-      resultsPlaceholder.setAttribute('aria-hidden', 'true');
       resultsContent.classList.add('visible');
 
-      /* Count-up GPA */
+      /* Count-up */
       countUp(gpaNumber, 0, semGPA, 1200);
-      gpaNumber.setAttribute('aria-label', `Semester GPA: ${semGPA.toFixed(2)}`);
+      gpaNumber.setAttribute('aria-label', 'Semester GPA: ' + semGPA.toFixed(2));
 
       /* Classification */
-      const { label, cls } = getClassification(semGPA);
-      classificationBadge.textContent = label;
-      classificationBadge.className = 'classification-badge ' + cls;
+      var cl = getClassification(semGPA);
+      classificationBadge.textContent = cl.label;
+      classificationBadge.className = 'classification-badge ' + cl.cls;
 
       /* Cumulative box */
       if (cumGPA !== null) {
@@ -1560,66 +2036,71 @@
       }
 
       /* Stat chips */
-      chipCredits.textContent = credits;
-      chipPoints.textContent  = points.toFixed(1);
-      chipCourses.textContent = courseCount;
+      chipCourses.textContent  = courseCount;
+      chipCredits.textContent  = credits;
+      chipPoints.textContent   = points.toFixed(1);
 
       /* Progress bar */
-      const pct = Math.min((semGPA / 4.0) * 100, 100);
-      progressLabelValue.textContent = `${semGPA.toFixed(2)} / 4.0`;
+      var pct = Math.min((semGPA / 4.0) * 100, 100);
+      progressLabelValue.textContent = semGPA.toFixed(2) + ' / 4.0';
       progressTrack.setAttribute('aria-valuenow', semGPA.toFixed(2));
-      // Trigger animation (reset then set)
       progressFill.style.width = '0%';
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
           progressFill.style.width = pct + '%';
         });
       });
 
       /* Summary table */
-      summaryTbody.innerHTML = courses.map((c, i) => `
-        <tr>
-          <td>${escapeHtml(c.name)}</td>
-          <td>${c.credits}</td>
-          <td><span class="grade-tag">${c.grade}</span></td>
-          <td>${c.points}</td>
-        </tr>
-      `).join('');
+      summaryTbody.innerHTML = courses.map(function(c) {
+        return '<tr>' +
+          '<td>' + escapeHtml(c.name) + '</td>' +
+          '<td>' + c.credits + '</td>' +
+          '<td><span class="grade-tag">' + escapeHtml(c.grade) + '</span></td>' +
+          '<td>' + c.points + '</td>' +
+        '</tr>';
+      }).join('');
     }
 
     function hideResults() {
       resultsPlaceholder.style.display = '';
-      resultsPlaceholder.setAttribute('aria-hidden', 'false');
       resultsContent.classList.remove('visible');
     }
 
-    /* ─── HTML escape ─────────────────────── */
+    /* ── HTML escape ── */
     function escapeHtml(str) {
-      return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+      return String(str)
+        .replace(/&/g,  '&amp;')
+        .replace(/</g,  '&lt;')
+        .replace(/>/g,  '&gt;')
+        .replace(/"/g,  '&quot;')
+        .replace(/'/g,  '&#039;');
     }
 
-    /* ─── Calculate button ───────────────── */
     btnCalculate.addEventListener('click', calculateGPA);
 
-    /* ─── What-If Analyzer ───────────────── */
+    /* ══════════════════════════════════════════
+       WHAT-IF ANALYZER
+    ══════════════════════════════════════════ */
     function resetWhatif() {
       whatifResult.className = 'whatif-result placeholder';
-      whatifResult.innerHTML = '<i class="fa-solid fa-flask" aria-hidden="true" style="opacity:0.4; margin-right:6px;"></i> Calculate GPA first, then enter a target to see what\'s needed.';
+      whatifResult.innerHTML =
+        '<i class="fa-solid fa-flask" aria-hidden="true" style="opacity:0.4; margin-right:6px;"></i>' +
+        "Calculate GPA first, then enter a target to see what's needed.";
     }
 
-    btnAnalyze.addEventListener('click', function () {
+    btnAnalyze.addEventListener('click', function() {
       if (!lastCalculated) {
         whatifResult.className = 'whatif-result placeholder';
-        whatifResult.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true" style="margin-right:6px;"></i> Please calculate your GPA first.';
+        whatifResult.innerHTML =
+          '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true" style="margin-right:6px;"></i>' +
+          'Please calculate your GPA first.';
         return;
       }
-      const targetGPA       = parseFloat(targetGpaInput.value);
-      const remainingCreds  = parseFloat(remainingCreditsInput.value);
+
+      var targetGPA      = parseFloat(targetGpaInput.value);
+      var remainingCreds = parseFloat(remainingCreditsInput.value);
+
       if (isNaN(targetGPA) || targetGPA < 0 || targetGPA > 4) {
         whatifResult.className = 'whatif-result infeasible';
         whatifResult.textContent = 'Please enter a valid Target GPA between 0 and 4.';
@@ -1631,91 +2112,102 @@
         return;
       }
 
-      const { totalCredits, totalPoints } = lastCalculated;
-      const futureCredits = totalCredits + remainingCreds;
-      const neededPoints  = targetGPA * futureCredits - totalPoints;
-      const requiredGPA   = neededPoints / remainingCreds;
+      var tc         = lastCalculated.totalCredits;
+      var tp         = lastCalculated.totalPoints;
+      var futureC    = tc + remainingCreds;
+      var neededPts  = targetGPA * futureC - tp;
+      var reqGPA     = neededPts / remainingCreds;
 
-      if (requiredGPA <= 0) {
+      if (reqGPA <= 0) {
         whatifResult.className = 'whatif-result feasible';
-        whatifResult.innerHTML = `Your current GPA already meets or exceeds the target of <strong>${targetGPA.toFixed(2)}</strong>! Keep it up. <span class="whatif-badge green">Achievable</span>`;
-      } else if (requiredGPA > 4.0) {
+        whatifResult.innerHTML =
+          'Your current GPA already meets or exceeds the target of <strong>' + targetGPA.toFixed(2) + '</strong>! Keep it up.' +
+          '<span class="whatif-badge green">Achievable</span>';
+      } else if (reqGPA > 4.0) {
         whatifResult.className = 'whatif-result infeasible';
-        whatifResult.innerHTML = `You would need a GPA of <strong>${requiredGPA.toFixed(2)}</strong> over the next ${remainingCreds} credits — which exceeds the maximum (4.0). Target may not be achievable. <span class="whatif-badge red">Not Feasible</span>`;
+        whatifResult.innerHTML =
+          'You would need a GPA of <strong>' + reqGPA.toFixed(2) + '</strong> over the next ' + remainingCreds +
+          ' credits — which exceeds the maximum (4.0). Target may not be achievable.' +
+          '<span class="whatif-badge red">Not Feasible</span>';
       } else {
         whatifResult.className = 'whatif-result feasible';
-        whatifResult.innerHTML = `To reach a GPA of <strong>${targetGPA.toFixed(2)}</strong>, you need to earn a <strong>${requiredGPA.toFixed(2)}</strong> average GPA over your next <strong>${remainingCreds}</strong> credits. <span class="whatif-badge green">Achievable</span>`;
+        whatifResult.innerHTML =
+          'To reach a GPA of <strong>' + targetGPA.toFixed(2) + '</strong>, you need to earn a ' +
+          '<strong>' + reqGPA.toFixed(2) + '</strong> average GPA over your next ' +
+          '<strong>' + remainingCreds + '</strong> credits.' +
+          '<span class="whatif-badge green">Achievable</span>';
       }
     });
 
-    /* ─── Collapsible Panels ─────────────── */
+    /* ══════════════════════════════════════════
+       COLLAPSIBLE PANELS
+    ══════════════════════════════════════════ */
+    function togglePanel(panelId) {
+      var panelEl = document.getElementById(panelId);
+      if (!panelEl) return;
+      var isOpen = panelEl.classList.contains('open');
+      panelEl.classList.toggle('open', !isOpen);
+      var header = panelEl.querySelector('[aria-expanded]');
+      if (header) header.setAttribute('aria-expanded', String(!isOpen));
+    }
+
     function initCollapsible(toggleId, panelId) {
-      const toggleEl = document.getElementById(toggleId);
-      const panelEl  = document.getElementById(panelId);
+      var toggleEl = document.getElementById(toggleId);
+      var panelEl  = document.getElementById(panelId);
       if (!toggleEl || !panelEl) return;
 
-      toggleEl.addEventListener('click', function () {
-        const isOpen = panelEl.classList.contains('open');
-        panelEl.classList.toggle('open', !isOpen);
-        toggleEl.setAttribute('aria-expanded', String(!isOpen));
+      toggleEl.addEventListener('click', function() {
+        togglePanel(panelId);
       });
-      toggleEl.addEventListener('keydown', function (e) {
+      toggleEl.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          toggleEl.click();
+          togglePanel(panelId);
         }
       });
     }
 
-    initCollapsible('toggle-cumulative', 'panel-cumulative');
-    initCollapsible('toggle-scale',      'panel-scale');
-    initCollapsible('toggle-whatif',     'panel-whatif');
-
-    /* ─── Navbar scroll ──────────────────── */
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', function () {
-      navbar.classList.toggle('scrolled', window.scrollY > 20);
+    /* ══════════════════════════════════════════
+       NAVBAR SCROLL
+    ══════════════════════════════════════════ */
+    window.addEventListener('scroll', function() {
+      var navbar = document.getElementById('navbar');
+      if (window.scrollY > 20) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
     }, { passive: true });
 
-    /* ─── Hamburger menu ─────────────────── */
-    const hamburger   = document.getElementById('hamburger');
-    const mobileMenu  = document.getElementById('mobile-menu');
-
-    hamburger.addEventListener('click', function () {
-      const isOpen = mobileMenu.classList.contains('open');
-      mobileMenu.classList.toggle('open', !isOpen);
-      hamburger.classList.toggle('open', !isOpen);
-      hamburger.setAttribute('aria-expanded', String(!isOpen));
+    /* ══════════════════════════════════════════
+       HAMBURGER MENU
+    ══════════════════════════════════════════ */
+    document.getElementById('hamburger').addEventListener('click', function() {
+      var ham  = document.getElementById('hamburger');
+      var menu = document.getElementById('mobile-menu');
+      var open = ham.classList.toggle('open');
+      menu.classList.toggle('open', open);
+      ham.setAttribute('aria-expanded', String(open));
     });
 
-    /* Close mobile menu when a link is clicked */
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.remove('open');
-        hamburger.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-      });
+    /* ══════════════════════════════════════════
+       INIT
+    ══════════════════════════════════════════ */
+    document.addEventListener('DOMContentLoaded', function() {
+      /* Build grade buttons in widget */
+      buildGradeBtns();
+      updateCalcScreen();
+
+      /* Seed 3 default course rows */
+      addCourseRow();
+      addCourseRow();
+      addCourseRow();
+
+      /* Init collapsible panels */
+      initCollapsible('toggle-cumulative', 'panel-cumulative');
+      initCollapsible('toggle-scale',      'panel-scale');
+      initCollapsible('toggle-whatif',     'panel-whatif');
     });
-
-    /* ─── Default courses ────────────────── */
-    (function seedDefaultCourses() {
-      const defaults = [
-        { name: 'Mathematics 101', credits: '3', grade: 'A'  },
-        { name: 'English Composition', credits: '3', grade: 'B+' },
-        { name: 'Physics 101',     credits: '4', grade: 'B'  }
-      ];
-      defaults.forEach(d => {
-        coursesContainer.appendChild(createCourseRow(d.name, d.credits, d.grade));
-      });
-      updateCourseCount();
-    })();
-
-    /*
-     * ── FORMULA SELF-CHECK (console) ───────
-     * Course: 3 credits × B (3.0 pts) = 9.0 pts
-     * Two such courses: 18.0 total pts / 6 total credits = 3.0 GPA ✓
-     * Verified inline: (3*3.0 + 3*3.0) / (3+3) = 18/6 = 3.0
-     */
 
   </script>
 </body>
